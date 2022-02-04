@@ -806,8 +806,24 @@ func (t *Text) Type(r rune) {
 			Tagdown()
 			return
 		}
-		n = t.fr.GetFrameFillStatus().Maxlines / 3
-		caseDown()
+		t.TypeCommit()
+		nnb = 0
+		if t.q0 > 0 && t.file.ReadC(t.q0-1) != '\n' {
+			nnb = t.BsWidth(0x15)
+		}
+		q0 = t.q0
+		for q0 < t.Nc() && t.file.ReadC(q0) != '\n' {
+			q0++
+		}
+		q0++
+		for nnb > 0 && q0 < t.Nc() && t.file.ReadC(q0) != '\n' {
+			nnb--
+			q0++
+		}
+		if q0 > t.Nc() {
+			q0 = t.Nc();
+		}
+		t.Show(q0, q0, true)
 		return
 	case Kscrollonedown:
 		if t.what == Tag {
@@ -829,8 +845,33 @@ func (t *Text) Type(r rune) {
 			Tagup()
 			return
 		}
-		n = t.fr.GetFrameFillStatus().Maxlines / 3
-		caseUp()
+		t.TypeCommit()
+		nnb = 0
+		if t.q0 > 0 && t.file.ReadC(t.q0-1) != '\n' {
+			nnb = t.BsWidth(0x15)
+		}
+		q0 = t.q0
+		if q0 > 0 && q0 < t.Nc() && t.file.ReadC(q0) == '\n' {
+			q0--
+		}
+		for q0 > 0 && q0 < t.Nc() && t.file.ReadC(q0) != '\n' {
+			q0--
+		}
+		q0--
+		for q0 > 0 && q0 < t.Nc() && t.file.ReadC(q0) != '\n' {
+			q0--
+		}
+		if q0 != 0 && q0 < t.Nc() - 1 { // not at beginning/end of buffer
+			q0++
+		}
+		if q0 < 0 {
+			q0 = 0;
+		}
+		for nnb > 0 && q0 < t.Nc() && t.file.ReadC(q0) != '\n' {
+			nnb--
+			q0++
+		}
+		t.Show(q0, q0, true)
 		return
 	case Kscrolloneup:
 		if t.what == Tag {
@@ -890,54 +931,13 @@ func (t *Text) Type(r rune) {
 		}
 		t.Show(q0, q0, true)
 		return
-	case 0x0E: // ^N next line
-		t.TypeCommit()
-		nnb = 0
-		if t.q0 > 0 && t.file.ReadC(t.q0-1) != '\n' {
-			nnb = t.BsWidth(0x15)
-		}
-		q0 = t.q0
-		for q0 < t.Nc() && t.file.ReadC(q0) != '\n' {
-			q0++
-		}
-		q0++
-		for nnb > 0 && q0 < t.Nc() && t.file.ReadC(q0) != '\n' {
-			nnb--
-			q0++
-		}
-		if q0 > t.Nc() {
-			q0 = t.Nc();
-		}
-		t.Show(q0, q0, true)
+	case 0x0E: // ^N scroll down
+		n = t.fr.GetFrameFillStatus().Maxlines / 3
+		caseDown()
 		return
-	case 0x10: // ^P prev line
-		t.TypeCommit()
-		nnb = 0
-		if t.q0 > 0 && t.file.ReadC(t.q0-1) != '\n' {
-			nnb = t.BsWidth(0x15)
-		}
-		q0 = t.q0
-		if q0 > 0 && q0 < t.Nc() && t.file.ReadC(q0) == '\n' {
-			q0--
-		}
-		for q0 > 0 && q0 < t.Nc() && t.file.ReadC(q0) != '\n' {
-			q0--
-		}
-		q0--
-		for q0 > 0 && q0 < t.Nc() && t.file.ReadC(q0) != '\n' {
-			q0--
-		}
-		if q0 != 0 && q0 < t.Nc() - 1 { // not at beginning/end of buffer
-			q0++
-		}
-		if q0 < 0 {
-			q0 = 0;
-		}
-		for nnb > 0 && q0 < t.Nc() && t.file.ReadC(q0) != '\n' {
-			nnb--
-			q0++
-		}
-		t.Show(q0, q0, true)
+	case 0x10: // ^P scroll up
+		n = t.fr.GetFrameFillStatus().Maxlines / 3
+		caseUp()
 		return
 	case 0x03, draw.KeyCmd + 'c': // ^C, %C: copy
 		t.TypeCommit()
