@@ -1069,6 +1069,10 @@ func (t *Text) Type(r rune) {
 		t.TypeCommit()
 		t.iq1 = t.q0
 		return
+	case 0x13: // ^S Put
+		t.TypeCommit()
+		put(t, nil, nil, false, false, "")
+		return
 	case '\n':
 		if t.w.autoindent {
 			// find beginning of previous line using backspace code
