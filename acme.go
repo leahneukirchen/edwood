@@ -73,11 +73,11 @@ func main() {
 		}
 	}
 
-	g.tagfont = *varfontflag
-	os.Setenv("font", *varfontflag)
+	g.tagfont = *fixedfontflag
+	os.Setenv("font", *fixedfontflag)
 
 	draw.Main(func(dd *draw.Device) {
-		display, err := dd.NewDisplay(nil, *varfontflag, "edwood", *winsize)
+		display, err := dd.NewDisplay(nil, *fixedfontflag, "edwood", *winsize)
 		if err != nil {
 			log.Fatalf("can't open display: %v\n", err)
 		}
