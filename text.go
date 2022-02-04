@@ -1060,7 +1060,7 @@ func (t *Text) Type(r rune) {
 		for q1 < t.file.Nr() && t.file.ReadC(q1) != '\n' {
 			q1++
 		}
-		if q0 > 0 && t.file.ReadC(q0-1) == '\n' || q0 == q1 {
+		if q1 < t.file.Nr()-1 && (q0 > 0 && t.file.ReadC(q0-1) == '\n' || q0 == q1) {
 			// kill whole line at BOL or EOL
 			q1++
 		}
