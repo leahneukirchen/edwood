@@ -964,7 +964,7 @@ func (t *Text) Type(r rune) {
 		}
 		t.iq1 = t.q0
 		return
-	case 0x7F: // Del: erase character right
+	case 0x04, 0x7F: // ^D, Del: erase character right
 		if t.q1 >= t.Nc()-1 {
 			return // End of file
 		}
