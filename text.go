@@ -1005,6 +1005,21 @@ func (t *Text) Type(r rune) {
 
 		t.iq1 = t.q0
 		return
+	case 0x0B: // ^K kill to eol
+		q0 = t.q0
+		q1 = q0
+		for q1 < t.file.Nr() && t.file.ReadC(q1) != '\n' {
+			q1++
+		}
+		if q0 > 0 && t.file.ReadC(q0-1) == '\n' || q0 == q1 {
+			// kill whole line at BOL or EOL
+			q1++
+		}
+		t.file.Commit()
+		t.Delete(q0, q1, true)
+		t.TypeCommit()
+		t.iq1 = t.q0
+		return
 	case '\n':
 		if t.w.autoindent {
 			// find beginning of previous line using backspace code
