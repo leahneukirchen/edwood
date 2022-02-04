@@ -501,7 +501,8 @@ func (e *ObservableEditableBuffer) setfilename(name string) {
 	e.treatasclean = false
 
 	e.details.Name = name
-	if strings.HasSuffix(name, slashguide) || strings.HasSuffix(name, plusErrors) {
+	if strings.HasSuffix(name, slashguide) || strings.HasSuffix(name, plusErrors) ||
+	   strings.HasPrefix(name, "+Recent") {
 		e.isscratch = true
 	} else {
 		e.isscratch = false
