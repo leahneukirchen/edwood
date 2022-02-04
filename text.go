@@ -890,15 +890,15 @@ func (t *Text) Type(r rune) {
 		}
 		t.Show(q0, q0, true)
 		return
-	case draw.KeyCmd + 'c': // %C: copy
+	case 0x03, draw.KeyCmd + 'c': // ^C, %C: copy
 		t.TypeCommit()
 		cut(t, t, nil, true, false, "")
 		return
-	case draw.KeyCmd + 'z': // %Z: undo
+	case 0x1A, draw.KeyCmd + 'z': // ^Z, %Z: undo
 		t.TypeCommit()
 		undo(t, nil, nil, true, false, "")
 		return
-	case draw.KeyCmd + 'Z': // %-shift-Z: redo
+	case 0x19, draw.KeyCmd + 'Z': // ^Y, %-shift-Z: redo
 		t.TypeCommit()
 		undo(t, nil, nil, false, false, "")
 		return
@@ -910,7 +910,7 @@ func (t *Text) Type(r rune) {
 	}
 	// cut/paste must be done after the seq++/filemark
 	switch r {
-	case draw.KeyCmd + 'x': // %X: cut
+	case 0x18, draw.KeyCmd + 'x': // ^X, %X: cut
 		t.TypeCommit()
 		if t.what == Body {
 			global.seq++
@@ -920,7 +920,7 @@ func (t *Text) Type(r rune) {
 		t.Show(t.q0, t.q0, true)
 		t.iq1 = t.q0
 		return
-	case draw.KeyCmd + 'v': // %V: paste
+	case 0x16, draw.KeyCmd + 'v': // ^V, %V: paste
 		t.TypeCommit()
 		if t.what == Body {
 			global.seq++
@@ -951,7 +951,7 @@ func (t *Text) Type(r rune) {
 		}
 		nr = len(rp) // runestrlen(rp);
 		// break into normal insertion case
-	case 0x1B:
+	case 0x1B: // ESC
 		if t.eq0 != ^0 {
 			if t.eq0 <= t.q0 {
 				t.SetSelect(t.eq0, t.q0)
