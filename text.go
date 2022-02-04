@@ -943,7 +943,7 @@ func (t *Text) Type(r rune) {
 		t.TypeCommit()
 		cut(t, t, nil, true, false, "")
 		return
-	case 0x1A, draw.KeyCmd + 'z': // ^Z, %Z: undo
+	case 0x1A, 0x0F, draw.KeyCmd + 'z': // ^Z, ^_, %Z: undo
 		t.TypeCommit()
 		undo(t, nil, nil, true, false, "")
 		return
