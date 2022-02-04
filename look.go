@@ -6,6 +6,7 @@ import (
 	"image"
 	"os"
 	"path/filepath"
+	"regexp"
 	"runtime/debug"
 	"strings"
 
@@ -333,7 +334,7 @@ func search(ct *Text, r []rune) bool {
 }
 
 func isfilec(r rune) bool {
-	Lx := ".-+/:@"
+	Lx := ".-+/:@~$"
 	if isalnum(r) {
 		return true
 	}
@@ -348,6 +349,27 @@ func cleanrname(rs []rune) []rune {
 	s := filepath.Clean(string(rs))
 	r, _, _ := util.Cvttorunes([]byte(s), len(s))
 	return r
+}
+
+func expandtildeenv(s string) string {
+	if strings.HasPrefix(s, "~/") {
+		home, err := os.UserHomeDir()
+		if err == nil {
+			s = filepath.Join(home, s[2:])	
+		}
+	}
+
+	envvar := regexp.MustCompile(`\$[A-Za-z_][A-Za-z0-9_]*`)
+	s = envvar.ReplaceAllStringFunc(s, func (name string) string {
+		val := os.Getenv(name[1:])
+		if val != "" {
+			return val
+		} else {
+			return name  // keep as is
+		}
+	})
+
+	return s
 }
 
 func expandfile(t *Text, q0 int, q1 int, e *Expand) (success bool) {
@@ -449,7 +471,7 @@ func expandfile(t *Text, q0 int, q1 int, e *Expand) (success bool) {
 			func(q int) rune { return t.ReadC(q) }, false)
 		return true
 	}
-	s := string(rb[:nname])
+	s := expandtildeenv(string(rb[:nname]))
 	if amin == q0 {
 		return isFile(s)
 	}
