@@ -704,7 +704,7 @@ func (t *Text) Complete() []rune {
 	}
 
 	// is path rooted? if not, we need to make it relative to window path
-	dir := string(path)
+	dir := expandtildeenv(string(path))
 	if !filepath.IsAbs(dir) {
 		dir = t.DirName("")
 		if len(dir) == 0 {
