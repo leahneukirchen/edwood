@@ -361,12 +361,15 @@ func getDirNames(f *os.File) ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	names := make([]string, len(entries))
-	for i, fi := range entries {
+	names := make([]string, 0)
+	for _, fi := range entries {
+		if strings.HasSuffix(fi.Name(), "~") {
+			continue
+		}
 		if fi.IsDir() {
-			names[i] = fi.Name() + string(filepath.Separator)
+			names = append(names, fi.Name() + string(filepath.Separator))
 		} else {
-			names[i] = fi.Name()
+			names = append(names, fi.Name())
 		}
 	}
 	sort.Strings(names)
