@@ -942,6 +942,10 @@ func (t *Text) Type(r rune) {
 		n = t.fr.GetFrameFillStatus().Maxlines / 3
 		caseUp()
 		return
+	case 0x13: // ^S Put
+		t.TypeCommit()
+		put(t, nil, nil, false, false, "")
+		return
 	case 0x03, draw.KeyCmd + 'c': // ^C, %C: copy
 		t.TypeCommit()
 		cut(t, t, nil, true, false, "")
@@ -1071,10 +1075,6 @@ func (t *Text) Type(r rune) {
 		t.Delete(q0, q1, true)
 		t.TypeCommit()
 		t.iq1 = t.q0
-		return
-	case 0x13: // ^S Put
-		t.TypeCommit()
-		put(t, nil, nil, false, false, "")
 		return
 	case '\n':
 		if t.w.autoindent {
